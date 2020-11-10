@@ -26,3 +26,4 @@
 
 from . b42handler import B42Handler
 from . commandhandler import CommandHandler
+from . errorhandler import ErrorHandler

@@ -229,7 +229,7 @@ class B42Handler(threading.Thread):
     # asynchronous part - receive and process incoming bytes/frames #
 
     def run(self):
-        """The receiver thread loop."""
+        """Internal. The receiver thread loop."""
         state = B42Handler._STATE_CMD0
         timestamp = None
         command = None

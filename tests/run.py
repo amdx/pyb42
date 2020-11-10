@@ -30,11 +30,13 @@ sys.path.insert(0, '..')
 
 import test_b42handler
 import test_commandhandler
+import test_errorhandler
 
 testLoader = unittest.TestLoader()
 suite = unittest.TestSuite()
 suite.addTest(testLoader.loadTestsFromModule(test_b42handler))
 suite.addTest(testLoader.loadTestsFromModule(test_commandhandler))
+suite.addTest(testLoader.loadTestsFromModule(test_errorhandler))
 
 
 # implements the unittest load_tests protocol
