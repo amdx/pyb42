@@ -13,4 +13,4 @@ B42 supports 16 commands with up to 18 bits data payload.
 ## Documentation ##
 
 For the B42 Protocol Specification,
-see [b42lib](https://github.com/amdx/b42lib/docs/B42_protocol.pdf).
+see [b42lib](https://github.com/amdx/b42lib/blob/main/docs/B42_protocol.pdf).
