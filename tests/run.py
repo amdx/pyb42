@@ -24,4 +24,21 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-from . b42handler import B42Handler
+import unittest
+import sys
+sys.path.insert(0, '..')
+
+import test_b42handler
+
+testLoader = unittest.TestLoader()
+suite = unittest.TestSuite()
+suite.addTest(testLoader.loadTestsFromModule(test_b42handler))
+
+
+# implements the unittest load_tests protocol
+def load_tests(loader, tests, pattern):
+    return suite
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner(verbosity=2).run(suite)
