@@ -58,6 +58,7 @@ setup(
     author_email='circuit@amdx.de',
     url='https://github.com/amdx/',
     packages=PACKAGES,
+    entry_points={'console_scripts': ['b42chat=scripts.b42chat:run']},
     python_requires='>=3.5',
     install_requires=['pyserial==3.4'],
     test_suite='tests'
