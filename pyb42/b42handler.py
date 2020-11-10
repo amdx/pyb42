@@ -78,7 +78,7 @@ class B42Handler(threading.Thread):
         """
 
         if length not in (1, 2, 3):
-            raise ValueError('invalid data length <%s>' % length)
+            raise ValueError('invalid data length <%s>' % str(length))
 
         b42_bytes = [0] * length
         b42_bytes[-1] = value & 0x3F
@@ -132,7 +132,7 @@ class B42Handler(threading.Thread):
         :raises: :class:`serial.SerialException` if serial connection fails
         """
 
-        super(B42Handler, self).__init__(daemon=True)
+        super().__init__(daemon=True)
         self._rx_frame_q = rx_frame_q
         self._rx_error_q = rx_error_q
 
@@ -296,6 +296,7 @@ class B42Handler(threading.Thread):
 
     def _process_error(self, code, msg):
 #        print('ERR:', code, msg)
+        now = time.time()
         if self._rx_error_q:
-            self._rx_error_q.put(B42Error(time.time(), code, msg))
-        logger.error('B42 [0x%02X] %s', code, msg)
+            self._rx_error_q.put(B42Error(now, code, msg))
+        logger.error('B42 [%.3f][0x%02X] %s', now, code, msg)

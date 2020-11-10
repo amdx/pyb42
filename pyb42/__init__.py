@@ -25,3 +25,4 @@
 # DEALINGS IN THE SOFTWARE.
 
 from . b42handler import B42Handler
+from . commandhandler import CommandHandler
