@@ -204,3 +204,17 @@ class B42HandlerErrorsTestCase(unittest.TestCase):
         self.check_error(rx_q, err_q, now, b42handler.B42_ERROR_EXPECT_DATA2)
         self.send_bytes((0x31, 0x41, 0x82, 0x83))
         self.check_error(rx_q, err_q, now, b42handler.B42_ERROR_EXPECT_DATA3)
+
+    def test_resync(self):
+        rx_q = Queue()
+        err_q = Queue()
+        self._b42 = b42handler.B42Handler(rx_frame_q=rx_q, rx_error_q=err_q)
+        now = time.time()
+        self.send_bytes((0x11,))  # expects 1 data byte
+        self.send_bytes((0x21, 0x41, 0x82))  # sequence error, but start of new frame
+        while rx_q.empty():
+            pass
+        rx_frame = rx_q.get()
+        self.assertEqual(rx_frame.command, 0x01)
+        self.assertEqual(rx_frame.data, (0x01, 0x02))
+        self.check_error(rx_q, err_q, now, b42handler.B42_ERROR_EXPECT_DATA1)
