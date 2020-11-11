@@ -26,7 +26,7 @@
 
 import unittest
 import time
-from queue import Queue
+from queue import Queue, Empty
 
 try:
     import serialdummy
@@ -37,6 +37,14 @@ from pyb42 import b42handler
 
 b42handler.logger.disabled = True
 b42handler.serial = serialdummy.SerialModule
+
+
+def get_from_q(q):
+    try:
+        item = q.get(timeout=0.1)
+    except Empty:
+        return None
+    return item
 
 
 class B42HandlerTestCase(unittest.TestCase):
@@ -61,7 +69,8 @@ class B42HandlerTestCase(unittest.TestCase):
         seq_num = 0
         num_bytes = -1
         for d in data:
-            sent_data = self._board.board_read_byte()
+            sent_data = self._board.board_read_byte(timeout=0.1)
+            self.assertIsNotNone(sent_data)
             sent_seq_num = sent_data >> 6
             self.assertEqual(sent_seq_num, seq_num)
             if seq_num == 0:
@@ -73,9 +82,8 @@ class B42HandlerTestCase(unittest.TestCase):
             seq_num += 1
 
     def check_received_frame(self, rx_q, timestamp, command, data=None):
-        while rx_q.empty():
-            pass
-        rx_frame = rx_q.get()
+        rx_frame = get_from_q(rx_q)
+        self.assertIsNotNone(rx_frame)
         self.assertIsInstance(rx_frame, b42handler.B42Frame)
         self.assertGreater(rx_frame.timestamp, timestamp)
         self.assertLessEqual(rx_frame.timestamp, time.time())
@@ -158,9 +166,8 @@ class B42HandlerErrorsTestCase(unittest.TestCase):
             self._board.board_write_byte(d)
 
     def check_error(self, rx_q, err_q, timestamp, code):
-        while err_q.empty():
-            pass
-        rx_error = err_q.get()
+        rx_error = get_from_q(err_q)
+        self.assertIsNotNone(rx_error)
         self.assertIsInstance(rx_error, b42handler.B42Error)
         self.assertEqual(rx_q.qsize(), 0)
         self.assertGreater(rx_error.timestamp, timestamp)
@@ -212,9 +219,8 @@ class B42HandlerErrorsTestCase(unittest.TestCase):
         now = time.time()
         self.send_bytes((0x11,))  # expects 1 data byte
         self.send_bytes((0x21, 0x41, 0x82))  # sequence error, but start of new frame
-        while rx_q.empty():
-            pass
-        rx_frame = rx_q.get()
+        rx_frame = get_from_q(rx_q)
+        self.assertIsNotNone(rx_frame)
         self.assertEqual(rx_frame.command, 0x01)
         self.assertEqual(rx_frame.data, (0x01, 0x02))
         self.check_error(rx_q, err_q, now, b42handler.B42_ERROR_EXPECT_DATA1)
