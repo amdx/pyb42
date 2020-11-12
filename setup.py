@@ -46,7 +46,7 @@ here = Path(__file__).absolute().parent
 NAME = 'pyb42'
 VERSION = load_version()
 LONG_DESC, LONG_DESC_CONTENT_TYPE = load_readme()
-PACKAGES = find_packages()
+PACKAGES = find_packages(exclude=('tests',))
 
 setup(
     name=NAME,
