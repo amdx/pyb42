@@ -47,6 +47,7 @@ NAME = 'pyb42'
 VERSION = load_version()
 LONG_DESC, LONG_DESC_CONTENT_TYPE = load_readme()
 PACKAGES = find_packages(exclude=('tests',))
+SCRIPTS = [str(f) for f in Path('scripts').glob('*')]
 
 setup(
     name=NAME,
@@ -58,7 +59,7 @@ setup(
     author_email='circuit@amdx.de',
     url='https://github.com/amdx/',
     packages=PACKAGES,
-    entry_points={'console_scripts': ['b42chat=scripts.b42chat:run']},
+    scripts=SCRIPTS,
     python_requires='>=3.5',
     install_requires=['pyserial==3.4'],
     test_suite='tests'
