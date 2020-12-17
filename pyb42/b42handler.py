@@ -174,7 +174,7 @@ class B42Handler(threading.Thread):
         self._serial.reset_input_buffer()
         self._serial.reset_output_buffer()
 
-        if hard:  # TODO
+        if hard:
             self._serial.dtr = 0
             self._serial.rts = 0
             time.sleep(0.1)
