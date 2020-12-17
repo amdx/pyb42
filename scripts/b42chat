@@ -27,7 +27,7 @@
 import logging
 from argparse import ArgumentParser
 from queue import Queue, Empty
-from time import sleep
+from time import sleep, localtime, strftime
 
 from pyb42 import B42Handler
 
@@ -45,6 +45,10 @@ def parse_cli_args():
     parser.add_argument(
         '-r', '--response-timeout', type=float, default=3.0,
         help='time in seconds to wait for responses (default: 3.0)'
+    )
+    parser.add_argument(
+        '-d', '--decode', action='store_true',
+        help='decode received frames'
     )
     return parser.parse_args()
 
@@ -66,6 +70,20 @@ def run():
         try:
             rx_frame = rx_q.get(True, args.response_timeout)
             print('received frame: %s' % str(rx_frame))
+            if args.decode:
+                print('  TIME: %s.%d' % (
+                    strftime('%H:%M:%S', localtime(rx_frame.timestamp)),
+                    divmod(rx_frame.timestamp, 1)[1] * 1000
+                ))
+                print('  COMM: %d (0x%02X) (0b%s)' % (
+                    rx_frame.command, rx_frame.command,
+                    bin(rx_frame.command)[2:].rjust(8, '0')
+                ))
+                print('  DATA: %s (%s) (%s)' % (
+                    ', '.join(str(b) for b in rx_frame.data),
+                    ', '.join('0x%02X' % b for b in rx_frame.data),
+                    ', '.join('0b%s' % bin(b)[2:].rjust(8, '0') for b in rx_frame.data),
+                ))
         except Empty:
             exit(0)
         except KeyboardInterrupt:
