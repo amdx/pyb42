@@ -24,6 +24,7 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
+import logging
 from argparse import ArgumentParser
 from queue import Queue, Empty
 from time import sleep
@@ -50,6 +51,8 @@ def parse_cli_args():
 
 def run():
     args = parse_cli_args()
+
+    logging.basicConfig(level=logging.INFO)
 
     rx_q = Queue()
     b42 = B42Handler(rx_frame_q=rx_q, port=args.port)
