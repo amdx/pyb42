@@ -61,6 +61,6 @@ setup(
     packages=PACKAGES,
     scripts=SCRIPTS,
     python_requires='>=3.5',
-    install_requires=['pyserial==3.4'],
+    install_requires=['pyserial>=3.4'],
     test_suite='tests'
 )
